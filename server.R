@@ -1,4 +1,19 @@
 source('helpers.R')
+
+# Uncomment ONLY when using on desktop!!!
+# packages <- function(x) {
+#   x <- as.character(match.call()[[2]])
+#   if (!require(x, character.only = T)) {
+#     install.packages(pkgs = x, repos = "http://cran.r-project.org")
+#     require(x, character.only = T)
+#   }
+# }
+# packages(shiny)
+# packages(pracma) # library for the function nthroot
+# packages(dplyr)
+# packages(plotly)
+# packages(DT)
+
 library(shiny)
 library(pracma) # library for the function nthroot
 library(dplyr)
@@ -24,8 +39,8 @@ shinyServer(function(input, output, session) {
     list(tabP = tablePR, prDF = probabilityDF)
   }
   
-  #minimalna wielkosc proby do wykrycia danego poziomu infekcyjnosci
-  #z danym prawdopodobienstwem
+  #minimal sample size for detection of given infection rate
+  #with given probability
   smpF <- function(){
    infRa2 <- seq(input$mmInf[1], input$mmInf[2], 0.0005)
    sampleN2 <- (log(1-input$probaB)/log(1-infRa2*input$czTn))
@@ -42,8 +57,8 @@ shinyServer(function(input, output, session) {
    list(tabN = tableSMP, saN = saN2)
    }
   
-  #poziom inekcyjnosci wykrywany przy danej liczebosci proby
-  #i danym prawdopodobienstwie wykrycia
+  #infection rate detected with given sample size
+  #and with given probability of detection
   rateiF <- function() {
   samN3 <- seq(1, input$sampleN3)
   infRa3 <- ((1-(nthroot((1-input$probaB3), samN3)))*1000)/input$czTg
@@ -59,7 +74,7 @@ shinyServer(function(input, output, session) {
                                                      targets = '_all'))))
   list(tabG = tableG, iR = iR3)
   }
-  #wykresy----
+  #plots----
   output$wykresP <- renderPlotly({
       plotDFP <- data.frame(probabilityF()$prDF)
       hovertxtp <- paste("p: ", round(plotDFP$p, digits = 2), "<br>",
@@ -97,7 +112,7 @@ shinyServer(function(input, output, session) {
                                                    tickangle = -30))
   })
   
-  #tabele----
+  #tables----
   output$tabelaP <- DT::renderDataTable ({
     probabilityF()$tabP
     })
@@ -110,6 +125,3 @@ shinyServer(function(input, output, session) {
     rateiF()$tabG
   })
 })
-
-#opcjonalnie----
-
