@@ -9,19 +9,19 @@ shinyUI(
   navbarPage(
     'Sampling and probability',
     theme = 'bootstrap.css', inverse = T,
-    #pierwzy tab----
+    #first tab----
     tabPanel(
       'Probability of detection',
       sidebarLayout(
         position = 'left',
         sidebarPanel(
-          #slider czulosc----
+          #slider sensitivity----
           sliderInput(
-            inputId = 'czTp',
+            inputId = 'testSensitivity',
             label = 'Sensitivity of a test',
             min = 0.60, max = 1.00, value = 0.90,step = 0.05
             ),
-          #slider poziom inf----
+          #slider inf rate----
           sliderInput(
             inputId = "infR",
             label = "Infection rate",
@@ -39,24 +39,24 @@ shinyUI(
           mainPanel(tabsetPanel(
             tabPanel(
               title = "Plot", 
-              plotlyOutput(outputId = 'wykresP', height = '600px')),
+              plotlyOutput(outputId = 'plotP', height = '600px')),
             tabPanel(
-              title = 'Table', DT::dataTableOutput('tabelaP')
+              title = 'Table', DT::dataTableOutput('tableP')
               )))
         )),
-    #drugi tab----
+    #second tab----
     tabPanel(
       'Min. sample size',
       sidebarLayout(
         position = 'left',
         sidebarPanel(
-          #slider czulosc----
+          #slider sensitivity----
           sliderInput(
-            inputId = 'czTn',
+            inputId = 'testSensitivityN',
             label = 'Sensitivity of a test',
             min = 0.60, max = 1.00, value = 0.90,step = 0.05
             ),
-          #slider p wykrycia----
+          #slider p detection----
           sliderInput(
             inputId = 'probaB',
             label = 'Probability of detection',
@@ -74,20 +74,20 @@ shinyUI(
           mainPanel(tabsetPanel(
             tabPanel(
               title = "Plot", 
-              plotlyOutput(outputId = 'wykresN', height = '600px')),
+              plotlyOutput(outputId = 'plotN', height = '600px')),
             tabPanel(
-              title = 'Table', DT::dataTableOutput('tabelaN')
+              title = 'Table', DT::dataTableOutput('tableN')
               )))
         )),
-    #trzeci tab----
+    #third tab----
     tabPanel(
       'Upper boundary of infection rate', 
       sidebarLayout(
         position = 'left',
         sidebarPanel(
-          #slider czulosc----
+          #slider sensitivity----
           sliderInput(
-            inputId = 'czTg',
+            inputId = 'testSensitivityG',
             label = 'Sensitivity of a test',
             min = 0.60, max = 1.00, value = 0.90,step = 0.05
           ),
@@ -109,9 +109,9 @@ shinyUI(
       mainPanel(tabsetPanel(
         tabPanel(
           title = "Plot", 
-          plotlyOutput(outputId = 'wykresG', height = '600px')),
+          plotlyOutput(outputId = 'plotG', height = '600px')),
         tabPanel(
-          title = 'Table', DT::dataTableOutput('tabelaG')
+          title = 'Table', DT::dataTableOutput('tableG')
         )))
     ))))
     #footer----

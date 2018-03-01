@@ -25,7 +25,7 @@ shinyServer(function(input, output, session) {
   #prawdopodobienstwo wykrycia
   probabilityF <- function(){
     sampleN1 <- seq(input$mmNumber[1], input$mmNumber[2])
-    probabilityC <- 1-(1-input$infR*input$czTp)^sampleN1
+    probabilityC <- 1-(1-input$infR*input$testSensitivity)^sampleN1
     probabilityDF <- as.data.frame(cbind('p'= probabilityC, 'N' = sampleN1))
     tablePR <- DT::datatable(data.frame('N' = sampleN1,
                                         'p'= round(probabilityC, digits = 3)),
@@ -43,7 +43,7 @@ shinyServer(function(input, output, session) {
   #with given probability
   smpF <- function(){
    infRa2 <- seq(input$mmInf[1], input$mmInf[2], 0.0005)
-   sampleN2 <- (log(1-input$probaB)/log(1-infRa2*input$czTn))
+   sampleN2 <- (log(1-input$probaB)/log(1-infRa2*input$testSensitivityN))
    saN2 <- as.data.frame(cbind('N' = sampleN2, 'infections' = infRa2))
    tableSMP <- DT::datatable(data.frame('Infections rate' = infRa2,
                                         'N' = ceiling(sampleN2)),
@@ -61,7 +61,7 @@ shinyServer(function(input, output, session) {
   #and with given probability of detection
   rateiF <- function() {
   samN3 <- seq(1, input$sampleN3)
-  infRa3 <- ((1-(nthroot((1-input$probaB3), samN3)))*1000)/input$czTg
+  infRa3 <- ((1-(nthroot((1-input$probaB3), samN3)))*1000)/input$testSensitivityG
   iR3 <- as.data.frame(cbind('Max.N.Infections' = infRa3, 'N' = samN3))
   tableG <- DT::datatable(data.frame('N' = samN3,
                                      'Upper bound of infections' = floor(infRa3)),
@@ -75,7 +75,7 @@ shinyServer(function(input, output, session) {
   list(tabG = tableG, iR = iR3)
   }
   #plots----
-  output$wykresP <- renderPlotly({
+  output$plotP <- renderPlotly({
       plotDFP <- data.frame(probabilityF()$prDF)
       hovertxtp <- paste("p: ", round(plotDFP$p, digits = 2), "<br>",
                          "N: ", plotDFP$N)
@@ -87,7 +87,7 @@ shinyServer(function(input, output, session) {
                                             tickangle = -30))
   })
   
-  output$wykresN <- renderPlotly({
+  output$plotN <- renderPlotly({
       plotDFN <- data.frame(smpF()$saN)
       hovertxtn <- paste("N: ", ceiling(plotDFN$N), "<br>",
                          "infections: ", round(plotDFN$infections, digits = 4))
@@ -99,7 +99,7 @@ shinyServer(function(input, output, session) {
                                                    tickangle = -30))
       })
   
-  output$wykresG <- renderPlotly({
+  output$plotG <- renderPlotly({
       
       plotDFG <- data.frame(rateiF()$iR)
       hovertxtg <- paste("infections: ", round(plotDFG$Max.N.Infections, digits = 0),
@@ -113,15 +113,15 @@ shinyServer(function(input, output, session) {
   })
   
   #tables----
-  output$tabelaP <- DT::renderDataTable ({
+  output$tableP <- DT::renderDataTable ({
     probabilityF()$tabP
     })
   
-  output$tabelaN <- DT::renderDataTable ({
+  output$tableN <- DT::renderDataTable ({
     smpF()$tabN
     })
   
-  output$tabelaG <- DT::renderDataTable ({
+  output$tableG <- DT::renderDataTable ({
     rateiF()$tabG
   })
 })
